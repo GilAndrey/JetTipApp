@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,7 +45,7 @@ fun MyApp(content: @Composable () -> Unit) {
     }
 }
 
-@Preview
+//@Preview
 @Composable
 fun TopHeader(totalPerPerson: Double = 132.0) {
     Surface(modifier = Modifier
@@ -70,6 +71,28 @@ fun TopHeader(totalPerPerson: Double = 132.0) {
         }
     }
 }
+
+@Preview
+@Composable
+fun MainContent() {
+    Surface(
+        modifier = Modifier.padding(2.dp)
+        .fillMaxWidth(),
+        shape = RoundedCornerShape(corner = CornerSize(8.dp)),
+        border = BorderStroke(width = 2.dp, color = Color.LightGray)
+        ) {
+
+        Column() {
+
+        }
+
+    }
+}
+
+
+
+
+
 
 
 
