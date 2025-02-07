@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.gilandrey.jettipapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.gilandrey.jettipapp"
