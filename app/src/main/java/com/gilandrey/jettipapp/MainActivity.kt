@@ -1,6 +1,7 @@
 package com.gilandrey.jettipapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -84,6 +85,15 @@ fun TopHeader(totalPerPerson: Double = 132.0) {
 @Preview
 @Composable
 fun MainContent() {
+    BillForm() {
+        billAmt ->
+        Log.d("AMT", "MainContent: ${billAmt.toInt() * 100}")
+    }
+}
+
+@Composable
+fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) {
+
     val totalBillState = remember {
         mutableStateOf("")
     }
@@ -92,12 +102,13 @@ fun MainContent() {
     }
     val keyboardController = LocalSoftwareKeyboardController.current
 
+
     Surface(
         modifier = Modifier.padding(2.dp)
-        .fillMaxWidth(),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
         border = BorderStroke(width = 2.dp, color = Color.LightGray)
-        ) {
+    ) {
 
         Column() {
             InputField(valueState = totalBillState,
@@ -106,8 +117,7 @@ fun MainContent() {
                 isSingleLine = true,
                 onAction = KeyboardActions {
                     if (!validState) return@KeyboardActions
-                    //TODO - onvaluechanged
-
+                    onValChange(totalBillState.value.trim())
                     keyboardController?.hide()
                 }
             )
@@ -115,12 +125,12 @@ fun MainContent() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    JetTipAppTheme {
-        MyApp {
-            Text("Hello again")
+    @Preview(showBackground = true)
+    @Composable
+    fun GreetingPreview() {
+        JetTipAppTheme {
+            MyApp {
+                Text("Hello again")
+            }
         }
     }
-}
