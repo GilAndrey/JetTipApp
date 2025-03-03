@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,8 +28,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ExperimentalComposeApi
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -131,6 +135,8 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
                 }
             )
 
+            var counter by remember { mutableIntStateOf(0) } // Initialize the counter to 0
+
             if (validState) {
                 Row(modifier = Modifier.padding(3.dp),
                 horizontalArrangement = Arrangement.Start) {
@@ -139,9 +145,13 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
 
                     Row(modifier = Modifier.padding(horizontal = 3.dp), horizontalArrangement = Arrangement.End) {
 
-                        RoundIconButton(imageVector = Icons.Default.Remove, onClick = { Log.d("Icon", "BillForm: Removed") } )
+                        RoundIconButton(imageVector = Icons.Default.Remove, onClick = { counter-- } )
 
-                        RoundIconButton(imageVector = Icons.Default.Add, onClick = { Log.d("Icon", "BillForm: Add") } )
+
+                        Text(text = counter.toString(), Modifier.align(Alignment.CenterVertically).padding(start = 9.dp, end = 9.dp))
+
+
+                        RoundIconButton(imageVector = Icons.Default.Add, onClick = { counter++} )
 
                     }
                 }
