@@ -24,11 +24,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -114,6 +115,9 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
     }
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    val sliderPosition = remember {
+        mutableFloatStateOf(0f)
+    }
 
     Surface(
         modifier = Modifier
@@ -135,9 +139,7 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
                 }
             )
 
-            var counter by remember { mutableIntStateOf(0) } // Initialize the counter to 0
-
-            if (validState) {
+//            if (validState) {
                 Row(modifier = Modifier.padding(3.dp),
                 horizontalArrangement = Arrangement.Start) {
                     Text("Split", modifier = Modifier.align(alignment = Alignment.CenterVertically))
@@ -145,22 +147,57 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
 
                     Row(modifier = Modifier.padding(horizontal = 3.dp), horizontalArrangement = Arrangement.End) {
 
-                        RoundIconButton(imageVector = Icons.Default.Remove, onClick = { counter-- } )
+                        RoundIconButton(imageVector = Icons.Default.Remove, onClick = { Log.d("BTT", "Removed") } )
 
 
-                        Text(text = counter.toString(), Modifier.align(Alignment.CenterVertically).padding(start = 9.dp, end = 9.dp))
+                        Text(text = "3",
+                            Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 9.dp, end = 9.dp))
 
 
-                        RoundIconButton(imageVector = Icons.Default.Add, onClick = { counter++} )
+                        RoundIconButton(imageVector = Icons.Default.Add, onClick = { Log.d("BTT", "Added") } )
 
                     }
                 }
+
+                //Tip row
+                Row(modifier = Modifier
+                    .padding(horizontal = 3.dp, vertical = 12.dp))
+                {
+                    Text(text = "Tip",
+                        modifier = Modifier.align(alignment = Alignment.CenterVertically))
+                    Spacer(modifier = Modifier.width(200.dp))
+
+                    Text(text = "$33.00",
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically))
+                }
+
+            Column(verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally)
+            {
+                Text(text = "33%")
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                //Slider
+                Slider(value = sliderPosition.value, onValueChange = { newVal ->
+                    sliderPosition.value = newVal
+                    Log.d(
+                        "Slider",
+                        "BillForm: $newVal"
+                    )
+                }
+                )
             }
-            else  {
-                Box() {}
             }
 
-        }
+
+//            else  {
+//                Box() {}
+//            }
+
+//        }
     }
 }
 
