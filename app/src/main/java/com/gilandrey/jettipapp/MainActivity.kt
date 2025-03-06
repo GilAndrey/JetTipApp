@@ -73,6 +73,7 @@ fun MyApp(content: @Composable () -> Unit) {
 fun TopHeader(totalPerPerson: Double = 132.0) {
     Surface(modifier = Modifier
         .fillMaxWidth()
+        .padding(15.dp)
         .height(150.dp)
         .clip(shape = CircleShape.copy(all = CornerSize(12.dp))),
         color = Color(0xFFE9D7F7)
@@ -98,9 +99,12 @@ fun TopHeader(totalPerPerson: Double = 132.0) {
 @Preview
 @Composable
 fun MainContent() {
-    BillForm() {
-        billAmt ->
-        Log.d("AMT", "MainContent: ${billAmt.toInt() * 100}")
+
+    Column {
+        BillForm() {
+            billAmt ->
+            Log.d("AMT", "MainContent: ${billAmt.toInt() * 100}")
+        }
     }
 }
 
@@ -118,6 +122,9 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
     val sliderPosition = remember {
         mutableFloatStateOf(0f)
     }
+
+    TopHeader()
+
 
     Surface(
         modifier = Modifier
@@ -186,17 +193,21 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
                     Log.d(
                         "Slider",
                         "BillForm: $newVal"
-                    )
-                }
+                    )},
+                    modifier =
+                    Modifier.padding(start = 16.dp, end = 16.dp),
+                    steps = 5, onValueChangeFinished = {
+//                        Log.d("Finished", "BillForm: ${sliderPosition.value}")
+                    }
                 )
             }
             }
 
-
+//
 //            else  {
 //                Box() {}
 //            }
-
+//
 //        }
     }
 }
