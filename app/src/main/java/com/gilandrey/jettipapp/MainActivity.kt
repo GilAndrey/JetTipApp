@@ -123,8 +123,13 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
         mutableFloatStateOf(0f)
     }
 
-    TopHeader()
+    val splitByState = remember {
+        mutableIntStateOf(1)
+    }
 
+    val range = IntRange(start = 1, endInclusive = 100)
+
+    TopHeader()
 
     Surface(
         modifier = Modifier
@@ -154,17 +159,25 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
 
                     Row(modifier = Modifier.padding(horizontal = 3.dp), horizontalArrangement = Arrangement.End) {
 
-                        RoundIconButton(imageVector = Icons.Default.Remove, onClick = { Log.d("BTT", "Removed") } )
+                        RoundIconButton(imageVector = Icons.Default.Remove, onClick = {
+                            splitByState.value = if (splitByState.intValue > 1) splitByState.intValue - 1
+                            else 1
+                        } )
 
-
-                        Text(text = "3",
+                        Text(text = "${splitByState.intValue}",
                             Modifier
                                 .align(Alignment.CenterVertically)
-                                .padding(start = 9.dp, end = 9.dp))
+                                .padding(start = 9.dp, end = 9.dp)
+                        )
 
 
-                        RoundIconButton(imageVector = Icons.Default.Add, onClick = { Log.d("BTT", "Added") } )
+                        RoundIconButton(imageVector = Icons.Default.Add, onClick = {
+                            if (splitByState.intValue < range.last) {
+                                splitByState.value = splitByState.intValue + 1
 
+                            }
+                        }
+                        )
                     }
                 }
 
