@@ -119,9 +119,12 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
     }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val sliderPosition = remember {
+
+    val sliderPositionState = remember {
         mutableFloatStateOf(0f)
     }
+
+    val tipPercentage = (sliderPositionState.value * 100).toInt();
 
     val splitByState = remember {
         mutableIntStateOf(1)
@@ -196,13 +199,13 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
             Column(verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally)
             {
-                Text(text = "33%")
+                Text(text = "$tipPercentage %")
 
                 Spacer(modifier = Modifier.height(14.dp))
 
                 //Slider
-                Slider(value = sliderPosition.value, onValueChange = { newVal ->
-                    sliderPosition.value = newVal
+                Slider(value = sliderPositionState.value, onValueChange = { newVal ->
+                    sliderPositionState.value = newVal
                     Log.d(
                         "Slider",
                         "BillForm: $newVal"
