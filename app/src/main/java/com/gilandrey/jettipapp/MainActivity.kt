@@ -31,7 +31,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -43,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gilandrey.jettipapp.components.InputField
 import com.gilandrey.jettipapp.ui.theme.JetTipAppTheme
+import com.gilandrey.jettipapp.util.calculateTotalPerPerson
 import com.gilandrey.jettipapp.util.calculateTotalTip
 import com.gilandrey.jettipapp.widgets.RoundIconButton
 
@@ -123,19 +123,25 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
         mutableFloatStateOf(0f)
     }
 
-    val tipPercentage = (sliderPositionState.value * 100).toInt();
+    val maxTip = 100
+
+    val tipPercentage = (sliderPositionState.value * maxTip).toInt()
 
     val splitByState = remember {
         mutableIntStateOf(1)
     }
 
+    val range = IntRange(start = 1, endInclusive = 100)
+
     val tipAmountState = remember {
         mutableDoubleStateOf(0.0)
     }
 
-    val range = IntRange(start = 1, endInclusive = 100)
+    val totalPerPersonState = remember {
+        mutableDoubleStateOf(0.0)
+    }
 
-    TopHeader()
+    TopHeader(totalPerPerson = totalPerPersonState.value)
 
     Surface(
         modifier = Modifier
@@ -166,8 +172,15 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
                     Row(modifier = Modifier.padding(horizontal = 3.dp), horizontalArrangement = Arrangement.End) {
 
                         RoundIconButton(imageVector = Icons.Default.Remove, onClick = {
-                            splitByState.value = if (splitByState.intValue > 1) splitByState.intValue - 1
-                            else 1
+                            splitByState.value = if (splitByState.intValue > 1) splitByState.intValue - 1 else 1
+
+                            totalPerPersonState.value = calculateTotalPerPerson(
+                                totalBill = totalBillState.value.toDouble(),
+                                splitBy = splitByState.value,
+                                tipPercentage = tipPercentage
+                            )
+
+
                         } )
 
                         Text(text = "${splitByState.intValue}",
@@ -180,6 +193,12 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
                         RoundIconButton(imageVector = Icons.Default.Add, onClick = {
                             if (splitByState.intValue < range.last) {
                                 splitByState.value = splitByState.intValue + 1
+
+                                totalPerPersonState.value = calculateTotalPerPerson(
+                                    totalBill = totalBillState.value.toDouble(),
+                                    splitBy = splitByState.value,
+                                    tipPercentage = tipPercentage
+                                )
 
                             }
                         }
@@ -211,13 +230,23 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
                     sliderPositionState.value = newVal
                     val bill = totalBillState.value
                     val billDouble = bill.toDoubleOrNull() ?: 0.0
+
                     tipAmountState.value = calculateTotalTip(totalBill = billDouble, tipPercentage = tipPercentage)
+
+                    totalPerPersonState.value = calculateTotalPerPerson(
+                        totalBill = billDouble,
+                        splitBy = splitByState.value,
+                        tipPercentage = tipPercentage
+                    )
+
                     Log.d("Slider", "BillForm: $newVal")
                 },
 
+                valueRange = 0f..1f,
+                steps = maxTip - 1,
                 modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-                    steps = 5, onValueChangeFinished = {
-//                        Log.d("Finished", "BillForm: ${sliderPosition.value}")
+                        onValueChangeFinished = {
+//                      Log.d("Finished", "BillForm: ${sliderPosition.value}")
                     }
                 )
             }
