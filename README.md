@@ -1,5 +1,5 @@
-tTipApp <3
-A tip calculator app built to practice JavaScript, HTML, and CSS!
+#TipApp <3
+A tip calculator app built to practice Kotlin and Android Compose!
 Um aplicativo de calculadora de gorjetas criado para praticar Kotlin e desenvolvimento Android!
 
 📌 Overview | Visão Geral
