@@ -6,9 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +26,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gilandrey.jettipapp.components.InputField
 import com.gilandrey.jettipapp.ui.theme.JetTipAppTheme
+import com.gilandrey.jettipapp.util.calculateTotalTip
 import com.gilandrey.jettipapp.widgets.RoundIconButton
 
 @ExperimentalComposeUiApi
@@ -130,6 +129,10 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
         mutableIntStateOf(1)
     }
 
+    val tipAmountState = remember {
+        mutableDoubleStateOf(0.0)
+    }
+
     val range = IntRange(start = 1, endInclusive = 100)
 
     TopHeader()
@@ -192,7 +195,7 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
                         modifier = Modifier.align(alignment = Alignment.CenterVertically))
                     Spacer(modifier = Modifier.width(200.dp))
 
-                    Text(text = "$33.00",
+                    Text(text = "$ ${tipAmountState.value}",
                     modifier = Modifier.align(alignment = Alignment.CenterVertically))
                 }
 
@@ -206,12 +209,13 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
                 //Slider
                 Slider(value = sliderPositionState.value, onValueChange = { newVal ->
                     sliderPositionState.value = newVal
-                    Log.d(
-                        "Slider",
-                        "BillForm: $newVal"
-                    )},
-                    modifier =
-                    Modifier.padding(start = 16.dp, end = 16.dp),
+                    val bill = totalBillState.value
+                    val billDouble = bill.toDoubleOrNull() ?: 0.0
+                    tipAmountState.value = calculateTotalTip(totalBill = billDouble, tipPercentage = tipPercentage)
+                    Log.d("Slider", "BillForm: $newVal")
+                },
+
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                     steps = 5, onValueChangeFinished = {
 //                        Log.d("Finished", "BillForm: ${sliderPosition.value}")
                     }
@@ -228,7 +232,7 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
     }
 }
 
-    @Preview(showBackground = true)
+@Preview(showBackground = true)
     @Composable
     fun GreetingPreview() {
         JetTipAppTheme {
